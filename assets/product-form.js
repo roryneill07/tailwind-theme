@@ -66,11 +66,14 @@ if (!customElements.get('product-form')) {
               return;
             }
 
+            const startMarker = CartPerformance.createStartingMarker('add:click-event:wait-for-subscribers');
             if (!this.error)
               publish(PUB_SUB_EVENTS.cartUpdate, {
                 source: 'product-form',
                 productVariantId: formData.get('id'),
                 cartData: response,
+              }).then(() => {
+                CartPerformance.measureFromMarker('add:click-event:wait-for-subscribers', startMarker);
               });
             this.error = false;
             const quickAddModal = this.closest('quick-add-modal');

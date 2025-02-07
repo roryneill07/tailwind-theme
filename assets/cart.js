@@ -32,7 +32,7 @@ class CartItems extends HTMLElement {
       if (event.source === 'cart-items') {
         return;
       }
-      this.onCartUpdate();
+      return this.onCartUpdate();
     });
   }
 
@@ -89,7 +89,7 @@ class CartItems extends HTMLElement {
 
   onCartUpdate() {
     if (this.tagName === 'CART-DRAWER-ITEMS') {
-      fetch(`${routes.cart_url}?section_id=cart-drawer`)
+      return fetch(`${routes.cart_url}?section_id=cart-drawer`)
         .then((response) => response.text())
         .then((responseText) => {
           const html = new DOMParser().parseFromString(responseText, 'text/html');
@@ -106,7 +106,7 @@ class CartItems extends HTMLElement {
           console.error(e);
         });
     } else {
-      fetch(`${routes.cart_url}?section_id=main-cart-items`)
+      return fetch(`${routes.cart_url}?section_id=main-cart-items`)
         .then((response) => response.text())
         .then((responseText) => {
           const html = new DOMParser().parseFromString(responseText, 'text/html');

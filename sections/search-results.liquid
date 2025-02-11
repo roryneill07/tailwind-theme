@@ -1,0 +1,15 @@
+{%- if predictive_search.performed -%}
+  <div id="searchResults">
+    {%- if predictive_search.resources.products.size > 0 -%}
+      <h3 class="text-sm text-grey-2">PRODUCTS</h3>
+      <ul>
+        {%- for product in predictive_search.resources.products -%}
+          <li>
+            <a href="{{ product.url }}">{{ product.title }}</a>
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+    See all results for "{{ predictive_search.terms }}"
+  </div>
+{%- endif -%}

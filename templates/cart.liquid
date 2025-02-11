@@ -1,0 +1,132 @@
+{% comment %} TODO quantity change with cart.js, if qty is set to less than 1 then remove from cart {% endcomment %}
+
+<main class="container">
+  {% comment %} Breadcrumb {% endcomment %}
+  <nav>
+    <ol class="space-x-3 py-5 flex items-center text-sm">
+      <div>Home</div>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="2.5"
+        stroke="currentColor"
+        class="size-4 text-grey"
+      >
+        <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+      </svg>
+
+      <div>Cart</div>
+    </ol>
+  </nav>
+  <h1 class="text-4xl font-semibold">Cart</h1>
+  {% if cart.empty? %}
+    No items in cart
+  {% else -%}
+    <div class="h-2 bg-secondary rounded-full overflow-hidden">
+      <div
+        class="bg-lime-500 h-full"
+        style="width:{{- cart.total_price | divided_by: 19900.0 | round: 2 | times: 100 }}%"
+      ></div>
+    </div>
+    {% if cart.total_price >= 19900 -%}
+      <div class="text-lime-600">You qualify for free shipping!</div>
+    {% else %}
+      <div>Spend {{ cart.total_price | minus: 19900 | abs | money }} more to get free shipping!</div>
+    {% endif %}
+    <div class="flex flex-row">
+      <div class="w-2/3">
+        <form action="{{ routes.cart_url }}" method="post"></form>
+        <table>
+          <thead>
+            <td colspan="2">Product</td>
+            <td>Price</td>
+            <td>Quantity</td>
+            <td>Total</td>
+            <td></td>
+          </thead>
+          {% for item in cart.items %}
+            <tr>
+              <td><img src="{{ item.image | image_url: width: 100 }}" alt="{{ item.title }}"></td>
+              <td>
+                {{ item.title -}}
+              </td>
+              <td>{{ item.final_price | money }}</td>
+              <td>
+                <div class="border-grey border rounded text-sm h-fill flex  mr-2">
+                  <button class="px-2" type="button" onclick="document.getElementById('quantity').stepDown();">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="1.5"
+                      stroke="currentColor"
+                      class="size-4"
+                    >
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14" />
+                    </svg>
+                  </button>
+
+                  <input
+                    name="quantity"
+                    id="quantity"
+                    class="w-8 text-center h-full outline-none"
+                    type="number"
+                    min="1"
+                    step="1"
+                    value="{{ item.quantity }}"
+                  >
+
+                  <button class="px-2" type="button" onclick="document.getElementById('quantity').stepUp();">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="1.5"
+                      stroke="currentColor"
+                      class="size-4"
+                    >
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                    </svg>
+                  </button>
+                </div>
+              </td>
+              <td>{{ item.final_line_price | money }}</td>
+              <td>
+                <a href="{{ item.url_to_remove }}">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="size-6"
+                  >
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                  </svg>
+                </a>
+              </td>
+            </tr>
+          {% endfor %}
+        </table>
+      </div>
+      <div class="w-1/3">
+        <h2>Order Summary</h2>
+        <div class="flex flex-row justify-between">
+          <div>Subtotal</div>
+          <div>{{ cart.total_price | money }}</div>
+        </div>
+        <div>Taxes and shipping will be calculated at checkout.</div>
+        <input
+          type="submit"
+          name="checkout"
+          value="Checkout"
+          class="bg-primary font-semibold px-4 py-3 rounded hover:bg-secondary hover:text-white hover:cursor-pointer"
+        >
+        <a class="border-2 font-semibold px-4 py-3 rounded hover:bg-secondary hover:text-white hover:cursor-pointer"
+          >Continue Shopping</a
+        >
+      </div>
+    </div>
+  {% endif %}
+</main>

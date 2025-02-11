@@ -1,0 +1,44 @@
+{%- if recommendations.performed? -%}
+  <div id="product-recommendations">
+    {%- if recommendations.products_count > 0 -%}
+      {% if recommendations.intent == 'related' %}
+        <h2 class="text-xl font-bold text-center py-6">You may also like...</h2>
+      {% elsif recommendations.intent == 'complementary' %}
+        <h2 class="text-xl font-bold text-center py-6">Pair it with</h2>
+      {% endif %}
+
+      <ul class="flex flex-row">
+        {%- for product in recommendations.products -%}
+          <li class="p-1 w-1/4">
+            <a href="{{ product.url }}">
+              {{ product.images.first | image_url: width: 250 | image_tag: class: 'object-contain w-full h-64 p-2' }}
+              <div class="text-xs uppercase text-grey-2 pt-2">{{ product.type }}</div>
+              <div>{{ product.title }}</div>
+              <div class="text-lg font-bold pt-1">
+                {{ product.price | money }}
+                {% if product.metafields.custom.tyre_stewardship_fee != blank %}
+                  <span class="text-xs font-normal">
+                    plus TSF of $
+                    {%- if product.metafields.custom.tyre_stewardship_fee == 'T11' -%}
+                      39.01
+                    {% elsif product.metafields.custom.tyre_stewardship_fee == 'T2' -%}
+                      3.83
+                    {% elsif product.metafields.custom.tyre_stewardship_fee == 'T3' -%}
+                      7.65
+                    {% elsif product.metafields.custom.tyre_stewardship_fee == 'T5' -%}
+                      15.30
+                    {% elsif product.metafields.custom.tyre_stewardship_fee == 'T6' -%}
+                      19.88
+                    {% elsif product.metafields.custom.tyre_stewardship_fee == 'T1' -%}
+                      2.30
+                    {% endif %}
+                  </span>
+                {% endif %}
+              </div>
+            </a>
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+  </div>
+{%- endif -%}
